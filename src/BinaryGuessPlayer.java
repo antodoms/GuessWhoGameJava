@@ -35,6 +35,7 @@ public class BinaryGuessPlayer implements Player
     public BinaryGuessPlayer(String gameFilename, String chosenName)
         throws IOException
     {
+    	
     	FileInputStream fin = new FileInputStream(gameFilename);
         Scanner sc = new Scanner(fin);
         

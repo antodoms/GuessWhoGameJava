@@ -1,6 +1,7 @@
 public class BTNode<E>
     {
        private E data;
+       private int score;
        private BTNode<E> left, right;   
        public BTNode(E initialData, BTNode<E> initialLeft, BTNode<E> initialRight)
        {
