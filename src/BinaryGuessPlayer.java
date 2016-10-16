@@ -15,7 +15,7 @@ import java.util.Scanner;
  */
 public class BinaryGuessPlayer implements Player
 {
-    private int numAttrs;
+    private int totalNumberOfAttributes;
     private PlayerObject playerSelect;
     private List<PlayerObject> playerList;
     private String[][] attributeList;
@@ -23,10 +23,10 @@ public class BinaryGuessPlayer implements Player
 	
     /**
      * Loads the game configuration from gameFilename, and also store the chosen
-     * person.
+     * playerNode.
      *
      * @param gameFilename Filename of game configuration.
-     * @param chosenName Name of the chosen person for this player.
+     * @param chosenName Name of the chosen playerNode for this player.
      * @throws IOException If there are IO issues with loading of gameFilename.
      *    Note you can handle IOException within the constructor and remove
      *    the "throws IOException" method specification, but make sure your
@@ -36,42 +36,39 @@ public class BinaryGuessPlayer implements Player
         throws IOException
     {
     	
-    	FileInputStream fin = new FileInputStream(gameFilename);
-        Scanner sc = new Scanner(fin);
+    	BufferedReader assignedReader = new BufferedReader(new FileReader(gameFilename));
         
-        List<String[]> attrs = new ArrayList<String[]>();
-        
+        List<String[]> attributes = new ArrayList<String[]>();
+        String line, playerName;
         while (true) {
-            String line = sc.nextLine();
+            line = assignedReader.readLine();
             if (line.equals("")) break;
-            attrs.add(line.split(" "));
+            attributes.add(line.split(" "));
         }
         
-        this.attributeList = attrs.toArray(new String[0][]);
+        this.attributeList = attributes.toArray(new String[0][]);
         
-        numAttrs = this.attributeList.length;
+        totalNumberOfAttributes = this.attributeList.length;
         
         playerList = new ArrayList<PlayerObject>();
-        while (sc.hasNext()) {
-            String name = sc.nextLine();
-            PlayerObject person = new PlayerObject(name);
-            while (sc.hasNext()) {
-                String line = sc.nextLine();
+        while ((playerName = assignedReader.readLine()) != null) {
+            
+            PlayerObject playerNode = new PlayerObject(playerName);
+            while ((line = assignedReader.readLine()) != null) {
                 if (line.equals("")) break;
-                String[] tokens = line.split(" ");
-                person.addattributes(tokens[0], tokens[1]);
+                String[] fields = line.split(" ");
+                playerNode.addattributes(fields[0], fields[1]);
             }
-            playerList.add(person);
+            playerList.add(playerNode);
             
            // Select Me i.e. The player
-            if (name.equals(chosenName)) playerSelect = person;
+            if (playerName.equals(chosenName)) playerSelect = playerNode;
         }
         
-        sc.close();
         
        // This reflects the guessed information 
-        guessAttributes = new String[numAttrs];
-        for (int i = 0; i < numAttrs; i++) 
+        guessAttributes = new String[totalNumberOfAttributes];
+        for (int i = 0; i < totalNumberOfAttributes; i++) 
         	guessAttributes[i] = null;
 
     } // end of BinaryGuessPlayer()
@@ -81,38 +78,39 @@ public class BinaryGuessPlayer implements Player
     public Guess guess() {
         // placeholder, replace
     	if (playerList.size() == 1) {
-    		PlayerObject person = playerList.get(0);
-            return new Guess(Guess.GuessType.Person, "", person.getName());
+    		PlayerObject playerNode = playerList.get(0);
+            return new Guess(Guess.GuessType.Person, "", playerNode.getName());
         }
         
-        int bestDiff = playerList.size() + 1;
-        int bestAttrID = 0, bestValueID = 1;
+        int bestDiff = Integer.MAX_VALUE;
+        int bestAttribute = 0, bestValue = 1;
         
-        for (int i = 0; i < numAttrs; i++) {
+        for (int i = 0; i < totalNumberOfAttributes; i++) {
             if (guessAttributes[i] != null) continue; // Attribute that has been already guessed
             for (int j = 1; j < attributeList[i].length; j++) {
-                String attr = attributeList[i][0];
-                String val = attributeList[i][j];
+                String attribute = attributeList[i][0];
+                String value = attributeList[i][j];
                 int count = 0; // number of players i.e. satisfying the condition
                 for (int k = 0; k < playerList.size(); k++) {
-                	PlayerObject person = playerList.get(k);
-                    if (person.equalsAttribute(attr,val)) {
+                	PlayerObject playerNode = playerList.get(k);
+                    if (playerNode.equalsAttribute(attribute,value)) {
                         count = count + 1;
                     }
                 }
                 
-                int diff = Math.abs(count - (playerList.size() - count));
+                // To calculate the best attribute for dividing the playerList to half
+                int diff = Math.abs(2*count - playerList.size());
                 
                 if (diff < bestDiff) {
                     // Update the Best information
                     bestDiff = diff;
-                    bestAttrID = i;
-                    bestValueID = j;
+                    bestAttribute = i;
+                    bestValue = j;
                 }
             }
         }
         
-        return new Guess(Guess.GuessType.Attribute, attributeList[bestAttrID][0], attributeList[bestAttrID][bestValueID]);
+        return new Guess(Guess.GuessType.Attribute, attributeList[bestAttribute][0], attributeList[bestAttribute][bestValue]);
     } 
     // End of guess()
 
@@ -132,29 +130,29 @@ public class BinaryGuessPlayer implements Player
         }
         
         if (currGuess.getType() == Guess.GuessType.Attribute) {
-            String attr = currGuess.getAttribute();
-            String val = currGuess.getValue();
-            List<PlayerObject> newCandidates = new ArrayList<PlayerObject>();
+            String attribute = currGuess.getAttribute();
+            String value = currGuess.getValue();
+            List<PlayerObject> newplayerList = new ArrayList<PlayerObject>();
             
             if (answer) {
-               // This extracts the persons with correct attribute value
+               // This extracts the playerNodes with correct attribute value
                 for (int i = 0; i < playerList.size(); i++) {
-                	PlayerObject person = playerList.get(i);
-                    if (person.equalsAttribute(attr,val)) newCandidates.add(person);
+                	PlayerObject playerNode = playerList.get(i);
+                    if (playerNode.equalsAttribute(attribute,value)) newplayerList.add(playerNode);
                 }
                 
                 // this attribute is successfully guessed
                 for (int i = 0; i < attributeList.length; i++)
-                    if (attributeList[i][0].equals(attr)) guessAttributes[i] = val;
+                    if (attributeList[i][0].equals(attribute)) guessAttributes[i] = value;
             } else {
-                // extract persons with correct attribute value
+                // extract playerNodes with correct attribute value
                 for (int i = 0; i < playerList.size(); i++) {
-                	PlayerObject person = playerList.get(i);
-                    if (!person.equalsAttribute(attr,val)) newCandidates.add(person);
+                	PlayerObject playerNode = playerList.get(i);
+                    if (!playerNode.equalsAttribute(attribute,value)) newplayerList.add(playerNode);
                 }
             }
             
-            playerList = newCandidates;
+            playerList = newplayerList;
         }
         
         return false;
