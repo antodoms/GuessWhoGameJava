@@ -1,4 +1,7 @@
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 
 public class PlayerObject {
@@ -33,6 +36,22 @@ public class PlayerObject {
 			return true;
 		return false;
 	}
+	
+	public ArrayList<String> getattributekeys(){
+		ArrayList<String> temparray = new ArrayList<String>();
+		for(Entry<String, String> entry : attributes.entrySet()) {
+		    String key = entry.getKey();
+		    String value = entry.getValue();
+		    temparray.add(key);
+		}
+		return temparray;
+	}
+	
+	public HashMap<String, String> getattributes(){
+		return attributes;
+	}
+	
+	
 	
 	public Guess randomAttributeandValue(){
 		Random generator = new Random();
