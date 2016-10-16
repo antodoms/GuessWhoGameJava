@@ -62,13 +62,13 @@ public class BinaryGuessPlayer implements Player
             }
             playerList.add(person);
             
-            // select me
+           // Select Me i.e. The player
             if (name.equals(chosenName)) playerSelect = person;
         }
         
         sc.close();
         
-        // init guessed information
+       // This reflects the guessed information 
         guessAttributes = new String[numAttrs];
         for (int i = 0; i < numAttrs; i++) 
         	guessAttributes[i] = null;
@@ -88,11 +88,11 @@ public class BinaryGuessPlayer implements Player
         int bestAttrID = 0, bestValueID = 1;
         
         for (int i = 0; i < numAttrs; i++) {
-            if (guessAttributes[i] != null) continue; // already guessed this attribute
+            if (guessAttributes[i] != null) continue; // Attribute that has been already guessed
             for (int j = 1; j < attributeList[i].length; j++) {
                 String attr = attributeList[i][0];
                 String val = attributeList[i][j];
-                int count = 0; // number of candidates satisfying condition
+                int count = 0; // number of players i.e. satisfying the condition
                 for (int k = 0; k < playerList.size(); k++) {
                 	PlayerObject person = playerList.get(k);
                     if (person.equalsAttribute(attr,val)) {
@@ -103,7 +103,7 @@ public class BinaryGuessPlayer implements Player
                 int diff = Math.abs(count - (playerList.size() - count));
                 
                 if (diff < bestDiff) {
-                    // update best
+                    // Update the Best information
                     bestDiff = diff;
                     bestAttrID = i;
                     bestValueID = j;
@@ -112,7 +112,8 @@ public class BinaryGuessPlayer implements Player
         }
         
         return new Guess(Guess.GuessType.Attribute, attributeList[bestAttrID][0], attributeList[bestAttrID][bestValueID]);
-    } // end of guess()
+    } 
+    // End of guess()
 
 
 	public boolean answer(Guess currGuess) {
@@ -135,7 +136,7 @@ public class BinaryGuessPlayer implements Player
             List<PlayerObject> newCandidates = new ArrayList<PlayerObject>();
             
             if (answer) {
-                // extract persons with correct attribute value
+               // This extracts the persons with correct attribute value
                 for (int i = 0; i < playerList.size(); i++) {
                 	PlayerObject person = playerList.get(i);
                     if (person.equalsAttribute(attr,val)) newCandidates.add(person);
