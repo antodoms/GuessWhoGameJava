@@ -14,9 +14,9 @@ import java.util.Map.Entry;
  */
 public class CustomGuessPlayer implements Player
 {
-	HashMap<String, PlayerObject> playerList;
-	HashMap<String, AttributeObject> attributeList;
-	ArrayList<String> remainingplayer;
+	HashMap<String, PlayerObject> playerList;  // total players in the board
+	HashMap<String, AttributeObject> attributeList,selectedAttribute;
+	ArrayList<String> remainingplayer;  //remaining player
 	PlayerObject playerSelect,guessPlayer;
 	Guess guessAttributes;
 	
@@ -46,6 +46,7 @@ public class CustomGuessPlayer implements Player
             	List<String> fields = new ArrayList<String>(Arrays.asList(line.trim().split(" ")));
             	
             	fields.removeAll(Arrays.asList("", null," "));
+            	
             	if(fields.size() == 2 && currentName!=null){
 			  		if(playerList.containsKey(currentName)){
 			  			PlayerObject tempplayer = playerList.get(currentName);
@@ -83,7 +84,8 @@ public class CustomGuessPlayer implements Player
 			ArrayList<String> tempattributekeys = playerList.get(playername).getattributekeys();
     		for(int j=0; j< tempattributekeys.size(); j++){
     			if(attributeList.containsKey(tempattributekeys.get(j))){
-      				attributeList.get(tempattributekeys.get(j)).addAttributeValues(tempattributes.get(tempattributekeys.get(j)));
+    				// if(!(selectedAttribute.containsKey(tempattributekeys.get(j)) && selectedAttribute.get(tempattributekeys.get(j)).isValidAttributeValue(tempattributes.get(tempattributekeys.get(j)))))
+    				attributeList.get(tempattributekeys.get(j)).addAttributeValues(tempattributes.get(tempattributekeys.get(j)));
       			}else{
       				attributeList.put(tempattributekeys.get(j), new AttributeObject(tempattributekeys.get(j)));
       			}
@@ -94,14 +96,14 @@ public class CustomGuessPlayer implements Player
 
     public Guess guess() {
 
-updateAttributeList();
+    	updateAttributeList();
     	
     	if (remainingplayer.size() == 1) {
             PlayerObject person = playerList.get(remainingplayer.get(0));
             return new Guess(Guess.GuessType.Person, "", person.getName());
         }
     	
-    	int bestDiff = remainingplayer.size() + 1;
+    	int bestDiff = Integer.MAX_VALUE;
         String bestAttrID = playerList.get(remainingplayer.get(0)).getattributekeys().get(0);
         String bestValueID = playerList.get(remainingplayer.get(0)).getattributes().get(bestAttrID);
         
@@ -112,7 +114,7 @@ updateAttributeList();
 		    AttributeObject value = entry.getValue();
 		    temp = value.getBestAttribute();
 		    int count = temp.count;
-		    int diff = Math.abs(count - (remainingplayer.size() - count));
+		    int diff = Math.abs(2 * count - remainingplayer.size());
 	                
 		    if (diff <= bestDiff) {
                 // update best
@@ -143,22 +145,28 @@ updateAttributeList();
 
 
 	public boolean receiveAnswer(Guess currGuess, boolean answer) {
+		/*
+		if(selectedAttribute.containsKey(currGuess.getAttribute())){
+			selectedAttribute.get(currGuess.getAttribute()).addAttributeValues(currGuess.getValue());
+		}else{
+		selectedAttribute.put(currGuess.getAttribute(), new AttributeObject(currGuess.getAttribute()));
+		} */
 		
 		if(currGuess.getType().equals(Guess.GuessType.Attribute)){
 			for(Entry<String, PlayerObject> entry : playerList.entrySet()) {
 			    String playername = entry.getKey();
 			    PlayerObject playerobject = entry.getValue();
 	
-			    if(answer==true && !playerobject.equalsAttribute(currGuess.getAttribute(),currGuess.getValue())){
+			    if(answer && !playerobject.equalsAttribute(currGuess.getAttribute(),currGuess.getValue())){
 			    	remainingplayer.remove(playername);
-			    }else if(answer==false && playerobject.equalsAttribute(currGuess.getAttribute(),currGuess.getValue())){
+			    }else if(!answer && playerobject.equalsAttribute(currGuess.getAttribute(),currGuess.getValue())){
 			    	remainingplayer.remove(playername);
 			    }
 			    // do what you have to do here
 			    // In your case, an other loop.
 			}
 			return false;
-		}else if(currGuess.getType().equals(Guess.GuessType.Person) && answer==false){
+		}else if(currGuess.getType().equals(Guess.GuessType.Person) && !answer){
 			return false;
 		}
         // placeholder, replace

@@ -37,6 +37,7 @@ public class PlayerObject {
 		return false;
 	}
 	
+	// gets the attribute keys
 	public ArrayList<String> getattributekeys(){
 		ArrayList<String> temparray = new ArrayList<String>();
 		for(Entry<String, String> entry : attributes.entrySet()) {
@@ -47,6 +48,7 @@ public class PlayerObject {
 		return temparray;
 	}
 	
+	// returns the attributes
 	public HashMap<String, String> getattributes(){
 		return attributes;
 	}

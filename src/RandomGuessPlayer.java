@@ -114,16 +114,16 @@ public class RandomGuessPlayer implements Player
 			    String playername = entry.getKey();
 			    PlayerObject playerobject = entry.getValue();
 	
-			    if(answer==true && !playerobject.equalsAttribute(currGuess.getAttribute(),currGuess.getValue())){
+			    if(answer && !playerobject.equalsAttribute(currGuess.getAttribute(),currGuess.getValue())){
 			    	remainingplayer.remove(playername);
-			    }else if(answer==false && playerobject.equalsAttribute(currGuess.getAttribute(),currGuess.getValue())){
+			    }else if(!answer && playerobject.equalsAttribute(currGuess.getAttribute(),currGuess.getValue())){
 			    	remainingplayer.remove(playername);
 			    }
 			    // do what you have to do here
 			    // In your case, an other loop.
 			}
 			return false;
-		}else if(currGuess.getType().equals(Guess.GuessType.Person) && answer==false){
+		}else if(currGuess.getType().equals(Guess.GuessType.Person) && !answer){
 			return false;
 		}
         // placeholder, replace

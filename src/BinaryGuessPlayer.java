@@ -15,11 +15,11 @@ import java.util.Scanner;
  */
 public class BinaryGuessPlayer implements Player
 {
-    private int totalNumberOfAttributes;
-    private PlayerObject playerSelect;
-    private List<PlayerObject> playerList;
-    private String[][] attributeList;
-    private String[] guessAttributes;
+    private int totalNumberOfAttributes; //total number of attributes
+    private PlayerObject playerSelect; // user selected player
+    private List<PlayerObject> playerList; // list of all players in the board
+    private String[][] attributeList;  // attribute list
+    private String[] guessAttributes;    //guessed attribute
 	
     /**
      * Loads the game configuration from gameFilename, and also store the chosen
@@ -35,41 +35,47 @@ public class BinaryGuessPlayer implements Player
     public BinaryGuessPlayer(String gameFilename, String chosenName)
         throws IOException
     {
-    	
-    	BufferedReader assignedReader = new BufferedReader(new FileReader(gameFilename));
-        
-        List<String[]> attributes = new ArrayList<String[]>();
-        String line, playerName;
-        while (true) {
-            line = assignedReader.readLine();
-            if (line.equals("")) break;
-            attributes.add(line.split(" "));
-        }
-        
-        this.attributeList = attributes.toArray(new String[0][]);
-        
-        totalNumberOfAttributes = this.attributeList.length;
-        
-        playerList = new ArrayList<PlayerObject>();
-        while ((playerName = assignedReader.readLine()) != null) {
-            
-            PlayerObject playerNode = new PlayerObject(playerName);
-            while ((line = assignedReader.readLine()) != null) {
-                if (line.equals("")) break;
-                String[] fields = line.split(" ");
-                playerNode.addattributes(fields[0], fields[1]);
-            }
-            playerList.add(playerNode);
-            
-           // Select Me i.e. The player
-            if (playerName.equals(chosenName)) playerSelect = playerNode;
-        }
-        
-        
-       // This reflects the guessed information 
-        guessAttributes = new String[totalNumberOfAttributes];
-        for (int i = 0; i < totalNumberOfAttributes; i++) 
-        	guessAttributes[i] = null;
+    	try {
+	    	BufferedReader assignedReader = new BufferedReader(new FileReader(gameFilename));
+	        
+	        List<String[]> attributes = new ArrayList<String[]>();
+	        String line, playerName;
+	        while (true) {
+	            line = assignedReader.readLine();
+	            if (line.equals("")) break;
+	            attributes.add(line.split(" "));
+	        }
+	        
+	        this.attributeList = attributes.toArray(new String[0][]);
+	        
+	        totalNumberOfAttributes = this.attributeList.length;
+	        
+	        playerList = new ArrayList<PlayerObject>();
+	        while ((playerName = assignedReader.readLine()) != null) {
+	            
+	            PlayerObject playerNode = new PlayerObject(playerName);
+	            while ((line = assignedReader.readLine()) != null) {
+	                if (line.equals("")) break;
+	                String[] fields = line.split(" ");
+	                playerNode.addattributes(fields[0], fields[1]);
+	            }
+	            playerList.add(playerNode);
+	            
+	           // Select Me i.e. The player
+	            if (playerName.equals(chosenName)) playerSelect = playerNode;
+	        }
+	        
+	        
+	       // This reflects the guessed information 
+	        guessAttributes = new String[totalNumberOfAttributes];
+	        for (int i = 0; i < totalNumberOfAttributes; i++) 
+	        	guessAttributes[i] = null;
+    	}catch(FileNotFoundException ex) {
+			System.err.println("Missing file " + ex.getMessage() + ".");
+		}
+		catch(IOException ex) {
+			System.err.println(ex.getMessage());	
+		}
 
     } // end of BinaryGuessPlayer()
 

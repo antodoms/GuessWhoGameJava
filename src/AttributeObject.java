@@ -6,18 +6,21 @@ import java.util.PriorityQueue;
 import java.util.Map.Entry;
 
 public class AttributeObject {
-	private String attributeName;
-	private HashMap<String, Integer> attributeValueList;
+	private String attributeName; //attribute name
+	private HashMap<String, Integer> attributeValueList; //attribute value list
 	
+	//constructor
 	public AttributeObject(String string){
 		attributeName = string;
 		attributeValueList = new HashMap<String,Integer>();
 	}
 	
+	// get attribute name
 	public String getAttributeName(){
 		return attributeName;
 	}
 	
+	//add attribute value to hashmap
 	public void addAttributeValues(String value){
 		if(attributeValueList.containsKey(value)){
 			attributeValueList.put(value, attributeValueList.get(value)+1);
@@ -26,10 +29,12 @@ public class AttributeObject {
 		}
 	}
 	
+	//get number of players the attributes and value contains
 	public int getAttributeCount(String value){
 		return attributeValueList.get(value);
 	}
 	
+	//return the arraylist of attribute values
 	public ArrayList<String> getAttributeValueInOrder(){
 		ArrayList<String> finallist = new ArrayList<String>();
 		PriorityQueue<String> patientQueue = new PriorityQueue<String>(1, new Comparator<String>() {
@@ -41,7 +46,7 @@ public class AttributeObject {
 		return new ArrayList<>();
 	}
 	
-	
+	// get the best attribute among the attributes
 	public BestAttribute getBestAttribute(){
 		String bigValue = "";
 		int bigCount =-1;
@@ -52,15 +57,11 @@ public class AttributeObject {
 		    	bigValue = key;
 		    	bigCount = value;
 		    }
-		}
-		
+		}	
 		return new BestAttribute(attributeName,bigValue,bigCount);
 	}
 	
-	
-	
-	
-	
+	// if the given value of attribute is valid
 	public boolean isValidAttributeValue(String value){
 		if(attributeValueList.containsKey(value))
 			return true;
