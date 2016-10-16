@@ -41,7 +41,7 @@ public class RandomGuessPlayer implements Player
     	playerList = new HashMap<String,PlayerObject>();
     	remainingplayer = new ArrayList<String>();
     	try {
-            // load chosen persons for both players
+             //  Load up the chosen persons for both players
             BufferedReader assignedReader = new BufferedReader(new FileReader(gameFilename));
             String currentName = null;
             String line;

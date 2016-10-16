@@ -12,15 +12,15 @@ public class PlayerObject {
 	public PlayerObject(String name) {
 		this.name = name;
 	}
-	
+	// Getter for the name
 	public String getName(){
 		return name;
 	}
 	
 	public void addattributes(String attributeName, String attributeValue){
-		attributes.put(attributeName, attributeValue);
+		attributes.put(attributeName, attributeValue);// Adds the attribute value
 	}
-	
+	// to check whether the attribute value is present 
 	public boolean isAttributeValuePresent(String attributeName, String attributeValue){
 		
 		if(attributes.containsKey(attributeName)){
@@ -52,7 +52,7 @@ public class PlayerObject {
 	}
 	
 	
-	
+	 // this generates the random attribute value to guess
 	public Guess randomAttributeandValue(){
 		Random generator = new Random();
 		Object[] Values = attributes.keySet().toArray();
@@ -60,6 +60,7 @@ public class PlayerObject {
 		String randomValue = attributes.get(randomKey);
 		
 		return new Guess(Guess.GuessType.Attribute,randomKey,randomValue);
-	}
+	}// end of randomAttributandValue()
 
-}
+}// end of playerObject class
+ 
